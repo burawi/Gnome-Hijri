@@ -1,0 +1,14 @@
+{
+  "description": "Shows Hijri date in the top panel",
+  "name": "Gnome Hijri",
+  "original-authors": "Burawi Ben Ammar",
+  "shell-version": [
+    "3.24",
+    "3.26",
+    "3.28",
+    "3.30"
+  ],
+  "url": "https://github.com/burawi/Gnome-Hijri",
+  "uuid": "GnomeHijri@burawi.ba",
+  "version": 1
+}

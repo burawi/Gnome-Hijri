@@ -1,0 +1,59 @@
+<schemalist gettext-domain="gnome-shell-extensions-hijri-calendar">
+  <schema id="org.gnome.shell.extensions.hijri-calendar" path="/org/gnome/shell/extensions/hijri-calendar/">
+    <key name="gregorian-display" type="b">
+      <default>true</default>
+      <summary>Display Gregorian date below the calendar</summary>
+      <description>Set to true to display Gregorian date.</description>
+    </key>
+    <key name="converter-format" type="s">
+      <default>'%D / %M / %Y'</default>
+      <summary>Converter date format</summary>
+      <description>Converter date format</description>
+    </key>
+    <key name="gregorian-display-format" type="s">
+      <default>'%D / %M / %Y'</default>
+      <summary>Gregorian date format</summary>
+      <description>Gregorian date format</description>
+    </key>
+    <key name="event-world" type="b">
+      <default>true</default>
+      <summary>Display official international events</summary>
+      <description>Display official international events.</description>
+    </key>
+    <key name="widget-format" type="s">
+      <default>'%d'</default>
+      <summary>Widget date format</summary>
+      <description>Widget date format</description>
+    </key>
+    <key name="display-language" type="s">
+      <default>'Arabic'</default>
+      <summary>Set the display language</summary>
+      <description>Set the display language</description>
+    </key>
+    <key name="startup-notification" type="b">
+      <default>true</default>
+      <summary>Startup Notification</summary>
+      <description>Show notification on start up</description>
+    </key>
+    <key name="numeral-system" type="s">
+      <default>'EA'</default>
+      <summary>Set the numeral system</summary>
+      <description>Set the numeral system</description>
+    </key>
+    <key name="date-adjustment" type="i">
+      <default>0</default>
+      <summary>Adjust date by increment/decrementing the number of days</summary>
+      <description>Adjust date by increment/decrementing the number of days</description>
+    </key>
+    <key name="custom-color" type="b">
+      <default>false</default>
+      <summary>Use custom color</summary>
+      <description>Use custom color.</description>
+    </key>
+    <key name="color" type="s">
+      <default>'#000000'</default>
+      <summary>Custom color</summary>
+      <description>Custom color.</description>
+    </key>
+  </schema>
+</schemalist>
