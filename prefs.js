@@ -214,6 +214,10 @@ const App = new Lang.Class({
             grid.attach(field, 1, 0, 1, 1);
             row.add(grid);
             listBox.add(row);
+
+            const separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+
+            listBox.add(separator);
         })
 
         frame.add(listBox);

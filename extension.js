@@ -114,18 +114,29 @@ const HijriCalendar = new Lang.Class({
 
         // Add preferences button
         let icon = new St.Icon({
-            icon_name: 'emblem-system-symbolic',
-            style_class: 'popup-menu-icon calendar-popup-menu-icon'
+            icon_name: 'preferences-system-symbolic',
+            icon_size: 16
         });
 
         let preferencesIcon = new St.Button({
             child: icon,
-            style_class: 'system-menu-action calendar-preferences-button',
+            style_class: 'message-list-clear-button button',
             reactive: true,
-            can_focus: true
+            can_focus: true,
+            track_hover: true,
+            accessible_name: _('Preferences')
         });
-        preferencesIcon.connect('clicked', function () {
-            launch_extension_prefs(extension.metadata.uuid);
+        preferencesIcon.connect('clicked', () => {
+            this.menu.actor.hide();
+            if (typeof ExtensionUtils.openPrefs === 'function') {
+                ExtensionUtils.openPrefs();
+            } else {
+                Util.spawn([
+                    "gnome-shell-extension-prefs",
+                    Me.uuid
+                ]);
+            }
+            return 0;
         });
         actionButtons.actor.add(preferencesIcon, {expand: true, x_fill: false});
         
