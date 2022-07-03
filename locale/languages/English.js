@@ -10,8 +10,8 @@ var strings = {
     year: 'Year',
     month: 'Month',
     day: 'Day',
-}
+};
 
 var metadata = {
-    dir: "ltr",
-}
+    dir: 'ltr',
+};

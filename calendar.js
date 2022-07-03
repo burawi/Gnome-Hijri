@@ -15,12 +15,20 @@ const Events = extension.imports.Events;
 
 const Schema = convenience.getSettings(extension, 'hijri-calendar');
 
+/**
+ *
+ * @param dateA
+ * @param dateB
+ */
 function _sameDay(dateA, dateB) {
-    return (dateA.year === dateB.year &&
+    return dateA.year === dateB.year &&
     dateA.month === dateB.month &&
-    dateA.day === dateB.day);
+    dateA.day === dateB.day;
 }
 
+/**
+ *
+ */
 function Calendar() {
     this._init();
 }
@@ -29,81 +37,81 @@ Calendar.prototype = {
     weekdayAbbr: lang.getLangStrings().weekdayAbbr,
     _weekStart: 6,
 
-    _init: function () {
+    _init() {
         // Start off with the current date
         this._selectedDate = new Date();
         this._selectedDate = HijriDate.HijriDate.toHijri(this._selectedDate.getFullYear(), this._selectedDate.getMonth() + 1, this._selectedDate.getDate());
 
         this.actor = new St.Widget({
-            //homogeneous: false,
+            // homogeneous: false,
             style_class: 'calendar',
             layout_manager: new Clutter.GridLayout(),
-            reactive: true
+            reactive: true,
         });
 
         this.actor.connect('scroll-event', Lang.bind(this, this._onScroll));
 
         this._buildHeader();
 
-        let that = this
+        let that = this;
         Schema.connect('changed::display-language', Lang.bind(
-            that, function() {
+            that, function () {
                 that._buildHeader();
-                this._update()
+                this._update();
             }
         ));
     },
 
     // Sets the calendar to show a specific date
-    setDate: function (date) {
-        if (!_sameDay(date, this._selectedDate)) {
+    setDate(date) {
+        if (!_sameDay(date, this._selectedDate))
             this._selectedDate = date;
-        }
+
 
         this._update();
     },
 
     // Sets the calendar to show a specific date
-    format: function (format, day, month, year, calendar) {
+    format(format, day, month, year, calendar) {
         const langPack = lang.getLangStrings();
         let months =
         {
             gregorian:
             {
                 small: langPack.smallGregorianMonthNames,
-                large: langPack.largeGregorianMonthNames
+                large: langPack.largeGregorianMonthNames,
             },
             hijri:
             {
                 small: langPack.smallHijriMonthNames,
-                large: langPack.largeHijriMonthNames
-            }
+                large: langPack.largeHijriMonthNames,
+            },
         };
 
         let find = ['%Y', '%y', '%MM', '%mm', '%M', '%m', '%D', '%d'];
         let replace = [
             year,
-            (year + "").slice(-2),
+            `${year}`.slice(-2),
             months[calendar]['large'][month - 1],
             months[calendar]['small'][month - 1],
-            ("0" + (month)).slice(-2),
+            `0${month}`.slice(-2),
             month,
-            ("0" + day).slice(-2),
-            day
+            `0${day}`.slice(-2),
+            day,
         ];
         return str.replace(find, replace, format);
     },
 
-    _buildHeader: function () {
-        const sysRTL = (Clutter.get_default_text_direction() === Clutter.TextDirection.RTL);
+    _buildHeader() {
+        const sysRTL = Clutter.get_default_text_direction() === Clutter.TextDirection.RTL;
         const langRTL = lang.getLangMetadata().dir === 'rtl';
         const inversed = sysRTL !== langRTL;
 
-        if (langRTL) {
+        if (langRTL)
             this._colPosition = 6;
-        } else {
+        else
             this._colPosition = 0;
-        }
+
 
         this.actor.destroy_all_children();
 
@@ -128,25 +136,24 @@ Calendar.prototype = {
             {
                 icon_name: sysRTL ? 'go-first-symbolic' : 'go-last-symbolic',
                 action: inversed ? this._onPrevYearButtonClicked : this._onNextYearButtonClicked,
-            }
+            },
         ];
 
         this._monthLabel = new St.Label({style_class: 'calendar-month-label'});
         let style = 'pager-button hcalendar-top-button';
-        buttons.forEach(({ icon_name, action }, index) => {
+        buttons.forEach(({icon_name, action}, index) => {
             const icon = new St.Icon({icon_name});
             const button = new St.Button({style_class: style, child: icon});
             button.connect('clicked', Lang.bind(this, action));
             icon.set_icon_size(16);
             this._topBox.add(button);
 
-            if(index === (buttons.length / 2 -1)) {
+            if (index === (buttons.length / 2 - 1))
                 this._topBox.add(this._monthLabel, {col: 2, expand: true, x_fill: false, x_align: St.Align.MIDDLE});
-            }
-        })
+        });
 
         // Add weekday labels...
-        
+
         this._weekdayLabels = [];
         for (let i = 0; i < 7; i++) {
             this._weekdayLabels[i] = new St.Label({
@@ -159,81 +166,79 @@ Calendar.prototype = {
         this._firstDayIndex = this.actor.get_children().length;
     },
 
-    _onScroll: function (actor, event) {
+    _onScroll(actor, event) {
         switch (event.get_scroll_direction()) {
-            case Clutter.ScrollDirection.UP:
-            case Clutter.ScrollDirection.LEFT:
-                this._onNextMonthButtonClicked();
-                break;
-            case Clutter.ScrollDirection.DOWN:
-            case Clutter.ScrollDirection.RIGHT:
-                this._onPrevMonthButtonClicked();
-                break;
+        case Clutter.ScrollDirection.UP:
+        case Clutter.ScrollDirection.LEFT:
+            this._onNextMonthButtonClicked();
+            break;
+        case Clutter.ScrollDirection.DOWN:
+        case Clutter.ScrollDirection.RIGHT:
+            this._onPrevMonthButtonClicked();
+            break;
         }
     },
 
-    _onPrevMonthButtonClicked: function () {
+    _onPrevMonthButtonClicked() {
         let newDate = this._selectedDate;
         let oldMonth = newDate.month;
         if (oldMonth === 1) {
             newDate.month = 12;
             newDate.year--;
-        }
-        else {
+        } else {
             newDate.month--;
         }
 
         this.setDate(newDate);
     },
 
-    _onNextMonthButtonClicked: function () {
+    _onNextMonthButtonClicked() {
         let newDate = this._selectedDate;
         let oldMonth = newDate.month;
         if (oldMonth === 12) {
             newDate.month = 1;
             newDate.year++;
-        }
-        else {
+        } else {
             newDate.month++;
         }
 
         this.setDate(newDate);
     },
 
-    _onPrevYearButtonClicked: function () {
+    _onPrevYearButtonClicked() {
         let newDate = this._selectedDate;
         newDate.year--;
 
         this.setDate(newDate);
     },
 
-    _onNextYearButtonClicked: function () {
+    _onNextYearButtonClicked() {
         let newDate = this._selectedDate;
         newDate.year++;
 
         this.setDate(newDate);
     },
 
-    _update: function () {
+    _update() {
         let now = new Date();
         const langPack = lang.getLangStrings();
         now = HijriDate.HijriDate.toHijri(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
-        if (this._selectedDate.year === now.year) {
+        if (this._selectedDate.year === now.year)
             this._monthLabel.text = langPack.largeHijriMonthNames[this._selectedDate.month - 1];
-        } else {
-            this._monthLabel.text = langPack.largeHijriMonthNames[this._selectedDate.month - 1] + ' ' + str.format(this._selectedDate.year);
-        }
+        else
+            this._monthLabel.text = `${langPack.largeHijriMonthNames[this._selectedDate.month - 1]} ${str.format(this._selectedDate.year)}`;
 
-        for(let i = 0; i < 7; i++) {
+
+        for (let i = 0; i < 7; i++)
             this._weekdayLabels[i].text = langPack.weekdayAbbr[i];
-        }
+
 
         // Remove everything but the topBox and the weekday labels
         let children = this.actor.get_children();
-        for (let i = this._firstDayIndex; i < children.length; i++) {
+        for (let i = this._firstDayIndex; i < children.length; i++)
             children[i].destroy();
-        }
+
 
         // Start at the beginning of the week before the start of the month
         let iter = this._selectedDate;
@@ -263,23 +268,23 @@ Calendar.prototype = {
                 styleClass += ' calendar-work-day hcalendar-work-day ';
 
             if (row === 2)
-                styleClass = ' calendar-day-top ' + styleClass;
+                styleClass = ` calendar-day-top ${styleClass}`;
             if (iter.getDay() === this._weekStart - 1)
-                styleClass = ' calendar-day-left ' + styleClass;
+                styleClass = ` calendar-day-left ${styleClass}`;
 
-            if (_sameDay(now, p_iter)) {
+            if (_sameDay(now, p_iter))
                 styleClass += ' calendar-today ';
-            } else if (p_iter.month !== this._selectedDate.month) {
+            else if (p_iter.month !== this._selectedDate.month)
                 styleClass += ' calendar-other-month-day hcalendar-other-month-day ';
-            }
 
-            if (_sameDay(this._selectedDate, p_iter)) {
+
+            if (_sameDay(this._selectedDate, p_iter))
                 button.add_style_pseudo_class('active');
-            }
+
 
             if (events[0])
                 styleClass += ' hcalendar-day-with-events ';
-                
+
             button.style_class = styleClass;
 
             this.actor.layout_manager.attach(
@@ -294,9 +299,9 @@ Calendar.prototype = {
 
             if (iter.getDay() === this._weekStart) {
                 // We stop on the first "first day of the week" after the month we are displaying
-                if (p_iter.month > this._selectedDate.month || p_iter.year > this._selectedDate.year) {
+                if (p_iter.month > this._selectedDate.month || p_iter.year > this._selectedDate.year)
                     break;
-                }
+
                 row++;
             }
         }
@@ -321,11 +326,11 @@ Calendar.prototype = {
                     g_selectedDate.getFullYear(),
                     'gregorian'
                 ),
-                style_class: 'calendar-day hcalendar-date-label'
+                style_class: 'calendar-day hcalendar-date-label',
             });
             _datesBox_g.add(button, {expand: true, x_fill: true, x_align: St.Align.MIDDLE});
             button.connect('clicked', Lang.bind(button, function () {
-                St.Clipboard.get_default().set_text(St.ClipboardType.CLIPBOARD, this.label)
+                St.Clipboard.get_default().set_text(St.ClipboardType.CLIPBOARD, this.label);
             }));
         }
 
@@ -337,7 +342,7 @@ Calendar.prototype = {
             this.actor.layout_manager.attach(_eventBox, 0, ++row, 7, 1);
             let bottomLabel = new St.Label({
                 text: str.format(events[0]),
-                style_class: 'hcalendar-event-label'
+                style_class: 'hcalendar-event-label',
             });
 
             /* Wrap truncate some texts!
@@ -349,5 +354,5 @@ Calendar.prototype = {
             bottomLabel.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
             _eventBox.add(bottomLabel, {expand: true, x_fill: true, y_fill: true, x_align: St.Align.MIDDLE});
         }
-    }
+    },
 };

@@ -1,0 +1,28 @@
+{
+  "name": "gnome-hijri",
+  "version": "1.0.0",
+  "description": "A gnome extension Hijri calendar",
+  "main": "extension.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/burawi/Gnome-Hijri.git"
+  },
+  "keywords": [
+    "gnome",
+    "hijri",
+    "calendar"
+  ],
+  "author": "Burawi Ben Ammar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/burawi/Gnome-Hijri/issues"
+  },
+  "homepage": "https://github.com/burawi/Gnome-Hijri#readme",
+  "devDependencies": {
+    "eslint": "^8.14.0",
+    "eslint-plugin-jsdoc": "^39.2.8"
+  }
+}

@@ -1,4 +1,4 @@
 var data = {
-    values: "۰۱۲۳۴۵۶۷۸۹",
-    label: "Persian",
-}
+    values: '۰۱۲۳۴۵۶۷۸۹',
+    label: 'Persian',
+};

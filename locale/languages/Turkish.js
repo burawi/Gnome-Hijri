@@ -10,8 +10,8 @@ var strings = {
     year: 'Yıl',
     month: 'Ay',
     day: 'Gün',
-}
+};
 
 var metadata = {
     dir: 'ltr',
-}
+};

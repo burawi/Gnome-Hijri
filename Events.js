@@ -8,26 +8,29 @@ const world = extension.imports.events.world;
 
 const Schema = convenience.getSettings(extension, 'hijri-calendar');
 
+/**
+ *
+ */
 function Events() {
     this._init();
 }
 
 Events.prototype = {
 
-    _init: function () {
+    _init() {
         this._eventsList = [];
-        if (Schema.get_boolean("event-world")) {
-            this._eventsList.push(new world.world);
-        }
+        if (Schema.get_boolean('event-world'))
+            this._eventsList.push(new world.world());
     },
 
-    getEvents: function (today) {
+    getEvents(today) {
         this._events = '';
         this._isHoliday = false;
         this._today = [];
 
         // if it is friday
-        if (today.getDay() === 5) this._isHoliday = true;
+        if (today.getDay() === 5)
+            this._isHoliday = true;
 
         // store gregorian date of today
         this._today[0] = [today.getFullYear(), today.getMonth() + 1, today.getDate()];
@@ -40,23 +43,23 @@ Events.prototype = {
         return [this._events, this._isHoliday];
     },
 
-    _checkEvent: function (el) {
+    _checkEvent(el) {
         let type = 0;
 
         switch (el.type) {
-            case 'gregorian':
-                type = 0;
-                break;
-            case 'hijri':
-                type = 1;
-                break;
+        case 'gregorian':
+            type = 0;
+            break;
+        case 'hijri':
+            type = 1;
+            break;
         }
 
         // if event is available, set event
         // and if it is holiday, set today as holiday!
         if (el.events[this._today[type][1]][this._today[type][2]]) {
-            this._events += "\n" + el.events[this._today[type][1]][this._today[type][2]][0];
+            this._events += `\n${el.events[this._today[type][1]][this._today[type][2]][0]}`;
             this._isHoliday = this._isHoliday || el.events[this._today[type][1]][this._today[type][2]][1];
         }
-    }
+    },
 };

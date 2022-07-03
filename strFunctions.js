@@ -4,6 +4,10 @@ const convenience = extension.imports.convenience;
 
 const lang = extension.imports.locale.utils;
 
+/**
+ *
+ * @param str
+ */
 function format(str) {
     let enums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
@@ -13,13 +17,19 @@ function format(str) {
     return replace(enums, hnums, str);
 }
 
-function replace (search, replace, subject) {
+/**
+ *
+ * @param search
+ * @param replace
+ * @param subject
+ */
+function replace(search, replace, subject) {
     let length = search.length;
     subject = subject.toString();
 
-    for (let i=0; i<length; i++) {
+    for (let i = 0; i < length; i++)
         subject = subject.split(search[i]).join(replace[i]);
-    }
+
 
     return subject;
 }

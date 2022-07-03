@@ -4,6 +4,10 @@ const Gio = imports.gi.Gio;
 const Config = imports.misc.config;
 const ExtensionUtils = imports.misc.extensionUtils;
 
+/**
+ *
+ * @param domain
+ */
 function initTranslations(domain) {
     let extension = ExtensionUtils.getCurrentExtension();
 
@@ -16,12 +20,17 @@ function initTranslations(domain) {
         Gettext.bindtextdomain(domain, Config.LOCALEDIR);
 }
 
+/**
+ *
+ * @param metadata
+ * @param extension_id
+ */
 function getSettings(metadata, extension_id) {
     let schemaDir = metadata.dir.get_child('schemas').get_path();
     let schemaSource = Gio.SettingsSchemaSource.new_from_directory(schemaDir,
         Gio.SettingsSchemaSource.get_default(),
         false);
-    let schema = schemaSource.lookup('org.gnome.shell.extensions.' + extension_id, false);
+    let schema = schemaSource.lookup(`org.gnome.shell.extensions.${extension_id}`, false);
     return new Gio.Settings({settings_schema: schema});
 }
-								  
+

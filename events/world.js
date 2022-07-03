@@ -1,3 +1,6 @@
+/**
+ *
+ */
 function world() {
     this._init();
 }
@@ -8,6 +11,6 @@ world.prototype = {
     /* [month][day] = [title, isHoliday] */
     events: [[], [], [], [], [], [], [], [], [], [], [], [], []],
 
-    _init: function () {
-    }
+    _init() {
+    },
 };

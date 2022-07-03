@@ -10,8 +10,8 @@ var strings = {
     year: 'سنة',
     month: 'شهر',
     day: 'يوم',
-}
+};
 
 var metadata = {
-    dir: "rtl",
-}
+    dir: 'rtl',
+};

@@ -19,19 +19,19 @@ const commonFieldOptions = {
     visible: true,
     hexpand: true,
     can_focus: true,
-}
+};
 
 const rows = [
     {
-        label: _("Display Gregorian"),
+        label: _('Display Gregorian'),
         getField: () => {
             const item = new Gtk.Switch();
             Schema.bind('gregorian-display', item, 'active', Gio.SettingsBindFlags.DEFAULT);
             return item;
-        }
+        },
     },
     {
-        label: _("Gregorian Format"),
+        label: _('Gregorian Format'),
         getField: () => {
             const format = new Gtk.Entry();
             format.set_text(Schema.get_string('gregorian-display-format'));
@@ -39,10 +39,10 @@ const rows = [
                 Schema.set_string('gregorian-display-format', format.text);
             });
             return format;
-        }
+        },
     },
     {
-        label: _("Converter Format"),
+        label: _('Converter Format'),
         getField: () => {
             const format = new Gtk.Entry();
             format.set_text(Schema.get_string('converter-format'));
@@ -50,98 +50,96 @@ const rows = [
                 Schema.set_string('converter-format', format.text);
             });
             return format;
-        }
+        },
     },
     {
-        label: _("International Events"),
+        label: _('International Events'),
         getField: () => {
             const item = new Gtk.Switch();
             Schema.bind('event-world', item, 'active', Gio.SettingsBindFlags.DEFAULT);
             return item;
-        }
+        },
     },
     {
-        label: _("Display Language"),
+        label: _('Display Language'),
         getField: () => {
             const languages = lang.listLanguages();
             const selectedLanguage = Schema.get_string('display-language');
 
-            const languagesBox = new Gtk.ComboBoxText()
+            const languagesBox = new Gtk.ComboBoxText();
             languages.forEach(function (language, index) {
                 languagesBox.append_text(language);
-                if (language === selectedLanguage) {
+                if (language === selectedLanguage)
                     languagesBox.set_active(index);
-                }
             });
             languagesBox.connect('changed', function (combo) {
                 Schema.set_string('display-language', combo.get_active_text());
             });
             return languagesBox;
-        }
+        },
     },
     {
-        label: _("Numeric System"),
+        label: _('Numeric System'),
         getField: () => {
             const numerals = lang.listNumerals();
             const selectedNumerals = Schema.get_string('numeral-system');
-            const numeralsBox = new Gtk.ComboBoxText()
+            const numeralsBox = new Gtk.ComboBoxText();
             numerals.forEach(function (systemId, index) {
                 const system = lang.getNumerals(systemId);
                 numeralsBox.append(systemId, system.label);
-                if (systemId === selectedNumerals) {
+                if (systemId === selectedNumerals)
                     numeralsBox.set_active(index);
-                }
             });
             numeralsBox.connect('changed', function (combo) {
                 Schema.set_string('numeral-system', combo.get_active_id());
             });
             return numeralsBox;
-        }
+        },
     },
     {
-        label: _("Days Adjustment"),
+        label: _('Days Adjustment'),
         getField: () => {
             const currentValue = Schema.get_int('date-adjustment') || 0;
-            const GtkAdjustment = Gtk.Adjustment.new( currentValue, -3, 3, 1, 1, 0);
+            const GtkAdjustment = Gtk.Adjustment.new(currentValue, -3, 3, 1, 1, 0);
             const adjustment = Gtk.SpinButton.new(GtkAdjustment, 1, 0);
             adjustment.connect('changed', function (field) {
                 Schema.set_int('date-adjustment', field.get_value_as_int());
             });
             return adjustment;
-        }
+        },
     },
     {
-        label: _("Use custom color"),
+        label: _('Use custom color'),
         getField: () => {
             const item = new Gtk.Switch();
             Schema.bind('custom-color', item, 'active', Gio.SettingsBindFlags.DEFAULT);
             return item;
-        }
+        },
     },
     {
-        label: _("Custom color"),
-        getField: (context) => {
+        label: _('Custom color'),
+        getField: context => {
             let color = new Gtk.ColorButton();
 
             let _color = context.getColorByHexadecimal(Schema.get_string('color'));
             color.set_color(_color);
 
-            color.connect('color-set', (function (color) {
+            color.connect('color-set', function (color) {
                 Schema.set_string('color', this.getHexadecimalByColor(color.get_color()));
-            }).bind(this));
+            }.bind(this));
             return color;
-        }
+        },
     },
     {
-        label: _("Startup Notification"),
+        label: _('Startup Notification'),
         getField: () => {
             const item = new Gtk.Switch();
             Schema.bind('startup-notification', item, 'active', Gio.SettingsBindFlags.DEFAULT);
             return item;
-        }
+        },
     },
     {
-        label: _("Widget Format"),
+        label: _('Widget Format'),
         getField: () => {
             const format = new Gtk.Entry();
             format.set_text(Schema.get_string('widget-format'));
@@ -149,30 +147,31 @@ const rows = [
                 Schema.set_string('widget-format', format.text);
             });
             return format;
-        }
-    }
-]
+        },
+    },
+];
 
-function init()
-{
+/**
+ *
+ */
+function init() {
 }
 
 const App = new Lang.Class({
     Name: 'HijriCalendar.App',
 
-    _init: function ()
-    {
+    _init() {
         this.main_box = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 20,
-            border_width: 10
+            border_width: 10,
         });
 
         const frame = new Gtk.Frame({
             visible: true,
             can_focus: false,
             label_xalign: 0,
-            shadow_type: Gtk.ShadowType.IN
+            shadow_type: Gtk.ShadowType.IN,
         });
 
         const listBox = new Gtk.ListBox({
@@ -182,8 +181,7 @@ const App = new Lang.Class({
         });
 
 
-        rows.forEach(({ label, getField }) => {
-
+        rows.forEach(({label, getField}) => {
             const row = new Gtk.ListBoxRow({
                 can_focus: true,
                 visible: true,
@@ -218,7 +216,7 @@ const App = new Lang.Class({
             const separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 
             listBox.add(separator);
-        })
+        });
 
         frame.add(listBox);
         this.main_box.add(frame);
@@ -226,8 +224,7 @@ const App = new Lang.Class({
         this.main_box.show_all();
     },
 
-    _scaleRound: function(value)
-    {
+    _scaleRound(value) {
         // Based on gtk/gtkcoloreditor.c
         value = Math.floor((value / 255) + 0.5);
         value = Math.max(value, 0);
@@ -235,19 +232,17 @@ const App = new Lang.Class({
         return value;
     },
 
-    _dec2Hex: function(value)
-    {
+    _dec2Hex(value) {
         value = value.toString(16);
 
-        while (value.length < 2) {
-            value = '0' + value;
-        }
+        while (value.length < 2)
+            value = `0${value}`;
+
 
         return value;
     },
 
-    getColorByHexadecimal: function(hex)
-    {
+    getColorByHexadecimal(hex) {
         let colorArray = Gdk.Color.parse(hex);
         let color = null;
 
@@ -261,17 +256,18 @@ const App = new Lang.Class({
         return color;
     },
 
-    getHexadecimalByColor: function(color)
-    {
+    getHexadecimalByColor(color) {
         let red = this._scaleRound(color.red);
         let green = this._scaleRound(color.green);
         let blue = this._scaleRound(color.blue);
-        return '#' + this._dec2Hex(red) + this._dec2Hex(green) + this._dec2Hex(blue);
-    }
+        return `#${this._dec2Hex(red)}${this._dec2Hex(green)}${this._dec2Hex(blue)}`;
+    },
 });
 
-function buildPrefsWidget()
-{
+/**
+ *
+ */
+function buildPrefsWidget() {
     let widget = new App();
     return widget.main_box;
 }
